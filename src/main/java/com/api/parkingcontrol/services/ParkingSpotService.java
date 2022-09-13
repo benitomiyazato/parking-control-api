@@ -24,7 +24,7 @@ public class ParkingSpotService {
     }
 
     public boolean existsByLicensePlateCar(String licensePlateCar) {
-        return parkingSpotRepository.existsByLicensePlateCar(licensePlateCar);
+        return parkingSpotRepository.existsByCar_LicensePlate(licensePlateCar);
     }
 
     public boolean existsByParkingSpotNumber(String parkingSpotNumber) {
