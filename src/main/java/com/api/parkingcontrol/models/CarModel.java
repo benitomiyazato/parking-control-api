@@ -1,10 +1,17 @@
 package com.api.parkingcontrol.models;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
 @Table(name = "tb_car")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class CarModel {
 
     @Id
