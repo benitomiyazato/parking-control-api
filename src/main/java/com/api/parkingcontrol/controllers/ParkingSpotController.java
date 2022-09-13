@@ -51,7 +51,7 @@ public class ParkingSpotController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> getOneParkingSpot(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Object> getOneParkingSpot(@PathVariable(value = "id") Long id) {
         Optional<ParkingSpotModel> parkingSpotModelOptional = parkingSpotService.findById(id);
         if (parkingSpotModelOptional.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found.");
@@ -60,7 +60,7 @@ public class ParkingSpotController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteParkingSpot(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Object> deleteParkingSpot(@PathVariable(value = "id") Long id) {
         Optional<ParkingSpotModel> parkingSpotModelOptional = parkingSpotService.findById(id);
         if (parkingSpotModelOptional.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Parking Spot not found.");
@@ -70,7 +70,7 @@ public class ParkingSpotController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateParkingSpot(@PathVariable(value = "id") UUID id,
+    public ResponseEntity<Object> updateParkingSpot(@PathVariable(value = "id") Long id,
                                                     @RequestBody @Valid ParkingSpotDto parkingSpotDto) {
         Optional<ParkingSpotModel> parkingSpotModelOptional = parkingSpotService.findById(id);
         if (parkingSpotModelOptional.isEmpty())

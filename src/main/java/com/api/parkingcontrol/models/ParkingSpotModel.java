@@ -3,6 +3,7 @@ package com.api.parkingcontrol.models;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.type.UUIDBinaryType;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,8 +20,9 @@ public class ParkingSpotModel implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    @SequenceGenerator(name = "parking_spot_sequence", sequenceName = "parking_spot_sequence")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "parking_spot_sequence")
+    private Long id;
 
     @Column(nullable = false, unique = true, length = 10)
     private String parkingSpotNumber;

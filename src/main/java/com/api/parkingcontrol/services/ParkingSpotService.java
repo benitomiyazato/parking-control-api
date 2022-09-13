@@ -39,7 +39,7 @@ public class ParkingSpotService {
         return parkingSpotRepository.findAll(pageable);
     }
 
-    public Optional<ParkingSpotModel> findById(UUID id) {
+    public Optional<ParkingSpotModel> findById(Long id) {
         return parkingSpotRepository.findById(id);
     }
 
