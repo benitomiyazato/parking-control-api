@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.util.UUID;
 
 @Entity
+@Table(name = "tb_car")
 public class CarModel {
 
     @Id
