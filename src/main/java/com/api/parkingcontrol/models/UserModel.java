@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -15,7 +16,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Setter
 @Table(name = "tb_user")
-public class UserModel implements UserDetails{
+public class UserModel implements UserDetails {
 
     @Id
     @SequenceGenerator(name = "user_sequence", sequenceName = "user_sequence", allocationSize = 1)
@@ -28,9 +29,15 @@ public class UserModel implements UserDetails{
     @Column(nullable = false)
     private String password;
 
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "tb_user_role_map",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "roleId"))
+    private List<RoleModel> roles;
+
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+    public List<RoleModel> getAuthorities() {
+        return this.roles;
     }
 
     @Override
