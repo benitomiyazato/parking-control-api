@@ -13,6 +13,7 @@ import java.util.Objects;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
+@Setter
 @Table(name = "tb_user")
 public class UserModel implements UserDetails{
 
