@@ -20,7 +20,7 @@ public class ParkingSpotModel implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @SequenceGenerator(name = "parking_spot_sequence", sequenceName = "parking_spot_sequence")
+    @SequenceGenerator(name = "parking_spot_sequence", sequenceName = "parking_spot_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "parking_spot_sequence")
     private Long id;
 
