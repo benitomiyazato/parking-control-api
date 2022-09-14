@@ -1,15 +1,16 @@
 package com.api.parkingcontrol.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.util.UUID;
+import java.util.Objects;
 
 @Entity
 @Table(name = "tb_car")
-@Data
+@Getter
+@Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class CarModel {
@@ -34,4 +35,16 @@ public class CarModel {
     @Column(nullable = false, length = 130)
     private String responsibleName;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        CarModel carModel = (CarModel) o;
+        return carId != null && Objects.equals(carId, carModel.carId);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

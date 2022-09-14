@@ -1,19 +1,19 @@
 package com.api.parkingcontrol.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.type.UUIDBinaryType;
+import lombok.*;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.UUID;
+import java.util.Objects;
 
 
 @Entity
 @Table(name = "TB_PARKING_SPOT")
-@Data
+@Getter
+@Setter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class ParkingSpotModel implements Serializable {
@@ -39,4 +39,17 @@ public class ParkingSpotModel implements Serializable {
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "car_id", referencedColumnName = "carId")
     private CarModel car;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        ParkingSpotModel that = (ParkingSpotModel) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
