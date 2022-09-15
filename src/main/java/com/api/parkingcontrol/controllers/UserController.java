@@ -56,11 +56,13 @@ public class UserController {
 
     @PutMapping("/role/{userId}")
     public ResponseEntity<Object> addUserRole(@PathVariable Long userId, @RequestBody RoleDto roleDto) {
+        // trying to get User from database
         Optional<UserModel> userOptional = userService.findById(userId);
         if (userOptional.isEmpty())
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with ID: " + userId + " was not found");
         UserModel user = userOptional.get();
 
+        // trying to get Role from database by Request Body's roleName
         Optional<RoleModel> roleOptional;
         try {
             roleOptional = roleService.findByRoleName(RoleName.valueOf(roleDto.getRoleName()));
@@ -69,6 +71,7 @@ public class UserController {
         }
         RoleModel role = roleOptional.get();
 
+        // checking if user already has this specific role
         if(user.getRoles().contains(role))
             return ResponseEntity.status(HttpStatus.CONFLICT).body("User already has " + role.getRoleName() + " role.");
 
