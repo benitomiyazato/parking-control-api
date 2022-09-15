@@ -1,12 +1,12 @@
 package com.api.parkingcontrol.controllers;
 
+import com.api.parkingcontrol.dtos.RoleDto;
 import com.api.parkingcontrol.dtos.UserDto;
+import com.api.parkingcontrol.enums.RoleName;
 import com.api.parkingcontrol.models.RoleModel;
 import com.api.parkingcontrol.models.UserModel;
-import com.api.parkingcontrol.repositories.RoleRepository;
 import com.api.parkingcontrol.services.RoleService;
 import com.api.parkingcontrol.services.UserService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,9 +31,9 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     @PostMapping
-    public ResponseEntity<Object> saveUser(@RequestBody @Valid UserDto userDto){
+    public ResponseEntity<Object> saveUser(@RequestBody @Valid UserDto userDto) {
 
-        if(!userDto.getPassword().equals(userDto.getMatchingPassword())) {
+        if (!userDto.getPassword().equals(userDto.getMatchingPassword())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Passwords don't match!");
         }
 
@@ -41,9 +41,9 @@ public class UserController {
         user.setUsername(userDto.getUsername());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         List<RoleModel> userDtoRoles = userDto.getRoles();
-        for (RoleModel role: userDtoRoles) {
+        for (RoleModel role : userDtoRoles) {
             Optional<RoleModel> roleOptional = roleService.findByRoleName(role.getRoleName());
-            if(roleOptional.isEmpty())
+            if (roleOptional.isEmpty())
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("Role " + role.getRoleName() + " not found");
 
             role.setRoleId(roleOptional.get().getRoleId());
@@ -51,9 +51,20 @@ public class UserController {
         user.setRoles(userDtoRoles);
         return ResponseEntity.status(HttpStatus.OK).body(userService.save(user));
     }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<UserModel> addUserRole(@PathVariable Long userId, @RequestBody RoleModel role){
-//
-//    }
+
+    @PutMapping("/role/{userId}")
+    public ResponseEntity<Object> addUserRole(@PathVariable Long userId, @RequestBody RoleDto roleDto) {
+        Optional<UserModel> fetchedUser = userService.findById(userId);
+        if (fetchedUser.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with ID:" + userId + " was not found");
+
+        Optional<RoleModel> roleOptional = roleService.findByRoleName(RoleName.valueOf(roleDto.getRoleName()));
+        if (roleOptional.isEmpty())
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Role " + roleDto.getRoleName() + " not found");
+
+        RoleModel role = roleOptional.get();
+        UserModel user = fetchedUser.get();
+        user.getRoles().add(role);
+        return ResponseEntity.status(HttpStatus.OK).body(userService.save(user));
+    }
 }
