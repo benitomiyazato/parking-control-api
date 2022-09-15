@@ -10,6 +10,7 @@ import com.api.parkingcontrol.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,7 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<Object> saveUser(@RequestBody @Valid UserDto userDto) {
 
@@ -54,6 +56,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(userService.save(user));
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/role/{userId}")
     public ResponseEntity<Object> addUserRole(@PathVariable Long userId, @RequestBody RoleDto roleDto) {
         // trying to get User from database
@@ -78,7 +81,7 @@ public class UserController {
         user.getRoles().add(role);
         return ResponseEntity.status(HttpStatus.OK).body(userService.save(user));
     }
-
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<List<UserModel>> findAllUsers(){
         return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
