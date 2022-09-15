@@ -2,6 +2,9 @@ package com.api.parkingcontrol.controllers;
 
 import com.api.parkingcontrol.dtos.RoleDto;
 import com.api.parkingcontrol.enums.RoleName;
+import com.api.parkingcontrol.models.RoleModel;
+import com.api.parkingcontrol.services.RoleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,23 +13,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/role")
 public class RoleController {
 
-    final List<String> roleNames;
-
-    public RoleController() {
-        roleNames = RoleName.enumRoleNames();
-    }
+    @Autowired
+    private RoleService roleService;
 
     @PostMapping
-    public ResponseEntity<Object> saveRole(@RequestBody @Valid RoleDto roleDto){
-        String dtoRoleName = roleDto.getRoleName();
-        if(!roleNames.contains(dtoRoleName))
-
-
+    public ResponseEntity<Object> saveRole(@RequestBody @Valid RoleDto roleDto) {
+        RoleModel roleModel = new RoleModel();
+        try {
+            roleModel.setRoleName(RoleName.valueOf(roleDto.getRoleName()));
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("There's no such RoleName enumerated");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(roleService.save(roleModel));
     }
 }
