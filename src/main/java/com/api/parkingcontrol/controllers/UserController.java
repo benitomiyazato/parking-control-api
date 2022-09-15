@@ -1,6 +1,7 @@
 package com.api.parkingcontrol.controllers;
 
 import com.api.parkingcontrol.dtos.UserDto;
+import com.api.parkingcontrol.models.RoleModel;
 import com.api.parkingcontrol.models.UserModel;
 import com.api.parkingcontrol.services.UserService;
 import org.springframework.beans.BeanUtils;
@@ -8,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -38,4 +36,9 @@ public class UserController {
 
         return ResponseEntity.status(HttpStatus.OK).body(userService.save(user));
     }
+//
+//    @PutMapping("/{id}")
+//    public ResponseEntity<UserModel> addUserRole(@PathVariable Long userId, @RequestBody RoleModel role){
+//
+//    }
 }
