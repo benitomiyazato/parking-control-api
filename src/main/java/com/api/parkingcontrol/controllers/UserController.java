@@ -40,6 +40,7 @@ public class UserController {
         UserModel user = new UserModel();
         user.setUsername(userDto.getUsername());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
         List<RoleModel> userDtoRoles = userDto.getRoles();
         for (RoleModel role : userDtoRoles) {
             Optional<RoleModel> roleOptional = roleService.findByRoleName(role.getRoleName());
@@ -49,22 +50,34 @@ public class UserController {
             role.setRoleId(roleOptional.get().getRoleId());
         }
         user.setRoles(userDtoRoles);
+
         return ResponseEntity.status(HttpStatus.OK).body(userService.save(user));
     }
 
     @PutMapping("/role/{userId}")
     public ResponseEntity<Object> addUserRole(@PathVariable Long userId, @RequestBody RoleDto roleDto) {
-        Optional<UserModel> fetchedUser = userService.findById(userId);
-        if (fetchedUser.isEmpty())
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with ID:" + userId + " was not found");
+        Optional<UserModel> userOptional = userService.findById(userId);
+        if (userOptional.isEmpty())
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User with ID: " + userId + " was not found");
+        UserModel user = userOptional.get();
 
-        Optional<RoleModel> roleOptional = roleService.findByRoleName(RoleName.valueOf(roleDto.getRoleName()));
-        if (roleOptional.isEmpty())
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Role " + roleDto.getRoleName() + " not found");
-
+        Optional<RoleModel> roleOptional;
+        try {
+            roleOptional = roleService.findByRoleName(RoleName.valueOf(roleDto.getRoleName()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Role not found");
+        }
         RoleModel role = roleOptional.get();
-        UserModel user = fetchedUser.get();
+
+        if(user.getRoles().contains(role))
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("User already has " + role.getRoleName() + " role.");
+
         user.getRoles().add(role);
         return ResponseEntity.status(HttpStatus.OK).body(userService.save(user));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserModel>> findAllUsers(){
+        return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
     }
 }
